@@ -2,7 +2,6 @@ package gui;
 
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
-import javax.swing.text.Caret;
 import javax.swing.text.PlainDocument;
 
 import text.WordFinder;
@@ -39,26 +38,43 @@ public class CompletingDocument extends PlainDocument
 	public void insertString(final int offset, final String s, final AttributeSet as) 
 	    throws BadLocationException
 	{
-		String newText;
+		String newText = null;
 		String compText;
+		String curText;
+		int oldPos;
 		
-		Caret caret = field.getCaret();
-		compText = super.getText(0, offset) + s;
-    newText = finder.find(compText);
-    if(newText == null || newText.length() == compText.length())
+		boolean select;
+		curText = getText(0,getLength());
+		compText = curText.substring(0, offset) + s + curText.substring(offset);
+		if(finder != null)
+		{
+		  newText = finder.find(compText.stripLeading());
+		}
+    oldPos = field.getCaretPosition();
+    if(newText == null || newText.length() == compText.stripLeading().length())
     {
       newText = "";
+      select = false;
     }
     else
     {
-      newText = newText.substring(compText.length(), newText.length());
+      newText = newText.substring(compText.stripLeading().length());
+      select = true;
     }
     newText = compText + newText;
-    super.remove(0, super.getLength());
+    remove(0, getLength());
     super.insertString(0, newText, as);
     
-    field.setSelectionStart(offset + 1);
-    field.setSelectionEnd(offset + (newText.length() - offset));
+    if(select)
+    {
+      field.setSelectionStart(offset + s.length());
+      field.setSelectionEnd(getLength());
+    } 
+    
+    if(!select)
+    {
+      field.setCaretPosition(oldPos + 1);
+    }
 	}
 	
 	/**

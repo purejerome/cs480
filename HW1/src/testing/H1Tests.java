@@ -5,6 +5,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Document;
+
 import org.junit.jupiter.api.Test;
 
 import gui.CompletingDocument;
@@ -33,49 +36,58 @@ class H1Tests {
 	    String prefix = "10";
 	    String resultString = autoFiller.find(prefix);
 	    
-	    assertTrue(resultString.toLowerCase().startsWith(prefix.toLowerCase()));
+	    assertTrue(resultString.startsWith(prefix));
+	    assertNotEquals(resultString, prefix);
 	    
-	    prefix = "ab";
+	    prefix = "Ab";
       resultString = autoFiller.find(prefix);
       
-      assertTrue(resultString.toLowerCase().startsWith(prefix.toLowerCase()));
+      assertTrue(resultString.startsWith(prefix));
+      assertNotEquals(resultString, prefix);
       
-      prefix = "AB";
+      prefix = "A";
       resultString = autoFiller.find(prefix);
       
-      assertTrue(resultString.toLowerCase().startsWith(prefix.toLowerCase()));
+      assertTrue(resultString.startsWith(prefix));
+      assertEquals(resultString, prefix);
       
-      prefix = "ski";
+      prefix = "Ski";
       resultString = autoFiller.find(prefix);
       
-      assertTrue(resultString.toLowerCase().startsWith(prefix.toLowerCase()));
+      assertTrue(resultString.startsWith(prefix));
+      assertNotEquals(resultString, prefix);
       
-      prefix = "bla";
+      prefix = "Bla";
       resultString = autoFiller.find(prefix);
       
-      assertTrue(resultString.toLowerCase().startsWith(prefix.toLowerCase()));
+      assertTrue(resultString.startsWith(prefix));
+      assertNotEquals(resultString, prefix);
       
       
-      prefix = "sunny";
+      prefix = "Sunny";
       resultString = autoFiller.find(prefix);
       
-      assertTrue(resultString.toLowerCase().startsWith(prefix.toLowerCase()));
+      assertTrue(resultString.startsWith(prefix));
+      assertEquals(resultString, prefix);
       
       
-      prefix = "to";
+      prefix = "To";
       resultString = autoFiller.find(prefix);
       
-      assertTrue(resultString.toLowerCase().startsWith(prefix.toLowerCase()));
+      assertTrue(resultString.startsWith(prefix));
+      assertNotEquals(resultString, prefix);
       
-      prefix = "cha";
+      prefix = "Cha";
       resultString = autoFiller.find(prefix);
       
-      assertTrue(resultString.toLowerCase().startsWith(prefix.toLowerCase()));
+      assertTrue(resultString.startsWith(prefix));
+      assertNotEquals(resultString, prefix);
       
-      prefix = "zyn";
+      prefix = "Zyn";
       resultString = autoFiller.find(prefix);
       
-      assertTrue(resultString.toLowerCase().startsWith(prefix.toLowerCase()));
+      assertTrue(resultString.startsWith(prefix));
+      assertNotEquals(resultString, prefix);
 	  }
 	
   @Test
@@ -104,36 +116,75 @@ class H1Tests {
      resultString = autoFiller.find(prefix);
      
      assertNull(resultString);
+     
+     prefix = "zzyrgots lane USA";
+     resultString = autoFiller.find(prefix);
+     
+     assertNull(resultString);
    }
 	 
    @Test
    void Intergration_Test()
    {
-     String prefix = "me";
+     String prefix = "Me";
      CompletingField field = new CompletingField();
      
      field.setWordList("street-names.txt");
      field.setText(prefix);
      assertTrue(field.getText().contains(prefix));
+     assertNotEquals(field.getText(), prefix);
+     
 
      field.setText("");
      assertTrue(field.getText().isEmpty());
      
-     prefix = "a";
+     prefix = "A";
      field.setText(prefix);
      assertEquals(field.getText(), prefix);
+     
+     prefix = "Amda";
+     field.setText(prefix);
+     assertEquals(field.getText(), prefix);
+     field.select(1, 2);
+     field.replaceSelection("");
+     field.setCaretPosition(2);
+     field.replaceSelection("d");
+     assertTrue(field.getText().contains("Adda"));
+     assertEquals(field.getText(), "Addams");
+     
+     prefix = "Do";
+     field.setText(prefix);
+     assertEquals(field.getText(), "Doak");
+     field.select(1, 4);
+     field.replaceSelection("a");
+     field.setCaretPosition(2);
+     assertTrue(field.getText().contains("Da"));
+     assertEquals(field.getText(), "Da Boyz");
      
      prefix = "asand98392r2by473";
      field.setText(prefix);
      assertEquals(field.getText(), prefix);
      
+   }
+   
+   @Test
+   void No_AutoFill_Test() throws BadLocationException
+   {
+     CompletingField field;
      
-     System.out.println(field.getText());
-//     assertDoesNotThrow(() ->{
-//       field.setWordList("street-names.txt");
-//     });
+     field = new CompletingField();
+     field.setText("ZZZZZZ");
+     assertEquals("ZZZZZZ", field.getText());
+     
+     field.setText("");
+     assertEquals("", field.getText());
+     
+     field.setText("i likke pie");
+     assertEquals("i likke pie", field.getText());
+     
+     field.setText("hunrgy sleep");
+     assertEquals("hunrgy sleep", field.getText());
    }
 
 }
 
-//System.out.println(resultString);

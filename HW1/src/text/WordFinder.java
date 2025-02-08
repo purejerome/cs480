@@ -13,7 +13,7 @@ import java.util.TreeSet;
  */
 public class WordFinder 
 {
-	private TreeSet<String> words = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
+	private TreeSet<String> words = new TreeSet<>();
 	
 	/**
 	 * Creates the file tree based off the word list entered.
@@ -44,7 +44,7 @@ public class WordFinder
 	{
 		String match = words.ceiling(prefix);
 		return (!prefix.isEmpty() && match != null 
-		    && match.toLowerCase().startsWith(prefix.toLowerCase())) 
+		    && match.startsWith(prefix)) 
 		    ? match : null;
 	}
 }
